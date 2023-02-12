@@ -1,5 +1,6 @@
 import pytest
 
+from pages.basket_page import BasketPage
 from pages.login_page import LoginPage
 from pages.main_page import MainPage
 
@@ -44,3 +45,13 @@ def test_login_string_should_be_in_url(browser):
     page = LoginPage(browser, link)
     page.open()
     page.should_be_login_url()
+
+
+@pytest.mark.basket_page
+def test_guest_cant_see_product_in_basket_opened_from_main_page(browser):
+    link = "http://selenium1py.pythonanywhere.com/"
+    page = BasketPage(browser, link, 0)
+    page.open()
+    page.go_to_basket()
+    page.should_be_no_items_in_cart()
+    page.should_be_basket_is_empty_text()

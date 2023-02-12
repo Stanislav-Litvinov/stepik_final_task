@@ -6,7 +6,7 @@ from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
-from .locators import BasePageLocators
+from .locators import BasePageLocators, BasketPageLocators
 
 
 class BasePage:
@@ -17,6 +17,10 @@ class BasePage:
 
     def open(self):
         self.browser.get(self.url)
+
+    def go_to_basket(self):
+        view_basket_button = self.browser.find_element(*BasketPageLocators.VIEW_BASKET_BUTTON)
+        view_basket_button.click()
 
     def go_to_login_page(self):
         link = self.browser.find_element(*BasePageLocators.LOGIN_LINK)
@@ -45,8 +49,16 @@ class BasePage:
 
         return False
 
+    def should_be_basket_is_empty_text(self):
+        assert self.is_element_present(
+            *BasketPageLocators.BASKET_IS_EMPTY_TEXT), "Text 'Your basket is empty' is not presented"
+
     def should_be_login_link(self):
         assert self.is_element_present(*BasePageLocators.LOGIN_LINK), "Login link is not presented"
+
+    def should_be_no_items_in_cart(self):
+        assert self.is_not_element_present(
+            *BasketPageLocators.ITEMS_IN_CART), "Items in the cart, but they shouldn't be there"
 
     def solve_quiz_and_get_code(self):
         alert = self.browser.switch_to.alert
