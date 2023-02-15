@@ -1,6 +1,40 @@
 import pytest
+from faker import Faker
 
+from pages.login_page import LoginPage
 from pages.product_page import ProductPage
+
+
+@pytest.mark.register_user
+class TestUserAddToBasketFromProductPage:
+    @pytest.fixture(scope="function", autouse=True)
+    def setup(self, browser):
+        f = Faker('en_US')
+        email = f.email()
+        password = f.password(length=10, special_chars=True, digits=True, upper_case=True, lower_case=True)
+        link = "http://selenium1py.pythonanywhere.com/accounts/login/"
+        page = LoginPage(browser, link)
+        page.open()
+        page.go_to_login_page()
+        page.register_new_user(email, password)
+        page.should_be_authorized_user()
+
+    @pytest.mark.xfail
+    def test_user_cant_see_success_message(self, browser):
+        link = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/"
+        page = ProductPage(browser, link)
+        page.open()
+        page.add_product_to_basket()
+        page.should_not_be_success_message()
+
+    def test_user_can_add_product_to_basket(self, browser):
+        link = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer"
+        page = ProductPage(browser, link)
+        page.open()
+        page.should_be_add_to_basket_button()
+        page.add_product_to_basket()
+        page.solve_quiz_and_get_code()
+        page.should_be_the_same_product_name_and_price_in_message()
 
 
 @pytest.mark.parametrize("num",
@@ -15,11 +49,11 @@ def test_guest_can_add_product_to_basket(browser, num):
     page.should_be_the_same_product_name_and_price_in_message()
 
 
-@pytest.mark.skip
+@pytest.mark.xfail
 @pytest.mark.product_page
-def test_guest_cant_see_success_message_after_adding_product_to_basket(browser):
+def test_guest_cant_see_success_message(self):
     link = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/"
-    page = ProductPage(browser, link, 0)
+    page = ProductPage(self, link, 0)
     page.open()
     page.add_product_to_basket()
     page.should_not_be_success_message()
@@ -33,7 +67,7 @@ def test_guest_cant_see_success_message(browser):
     page.should_not_be_success_message()
 
 
-@pytest.mark.skip
+@pytest.mark.xfail
 @pytest.mark.product_page
 def test_message_disappeared_after_adding_product_to_basket(browser):
     link = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/"
