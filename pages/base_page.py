@@ -54,15 +54,15 @@ class BasePage:
                                                                      " probably unauthorised user"
 
     def should_be_basket_is_empty_text(self):
-        assert self.is_element_present(
-            *BasketPageLocators.BASKET_IS_EMPTY_TEXT), "Text 'Your basket is empty' is not presented"
+        assert self.is_element_present(*BasketPageLocators.BASKET_IS_EMPTY_TEXT), "Text 'Your basket is empty'" \
+                                                                                  " is not presented"
 
     def should_be_login_link(self):
         assert self.is_element_present(*BasePageLocators.LOGIN_LINK), "Login link is not presented"
 
     def should_be_no_items_in_cart(self):
-        assert self.is_not_element_present(
-            *BasketPageLocators.ITEMS_IN_CART), "Items in the cart, but they shouldn't be there"
+        assert self.is_not_element_present(*BasketPageLocators.ITEMS_IN_CART), "Items in the cart," \
+                                                                               " but they shouldn't be there"
 
     def solve_quiz_and_get_code(self):
         alert = self.browser.switch_to.alert
